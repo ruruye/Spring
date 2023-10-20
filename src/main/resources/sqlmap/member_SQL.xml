@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace : MemberMapper.java
+-->
+<mapper namespace="kr.or.ddit.mapper.MemberMapper">
+	<!-- 회원(MEMBER) : memberVO -->
+	<resultMap type="memberVO" id="memberDetailMap">
+		<result property="userNo" column="USER_NO" />
+		<result property="userId" column="USER_ID" />
+		<result property="userPw" column="USER_PW" />
+		<result property="userName" column="USER_NAME" />
+		<result property="coin" column="COIN" />
+		<result property="regDate" column="REG_DATE" />
+		<result property="updDate" column="UPD_DATE" />
+		<result property="enabled" column="ENABLED" />
+		<!-- 여러 개의 권한 -->
+		<collection property="memberAuthVOList" resultMap="memberAuthMap" />
+	</resultMap>
+		
+	<resultMap type="memberAuthVO" id="memberAuthMap">
+		<result property="userNo" column="USER_NO" />
+		<result property="auth" column="AUTH" />
+	</resultMap>
+	<!-- 로그인 
+	드루와 : userNo(String)
+	가즈아 : memberVO
+	-->
+	<select id="detail" parameterType="String" resultMap="memberDetailMap">
+		SELECT A.USER_NO, A.USER_ID, A.USER_PW, A.USER_NAME, A.COIN
+		    , A.REG_DATE, A.UPD_DATE, A.ENABLED
+		    , B.AUTH
+		FROM MEMBER A, MEMBER_AUTH B
+		WHERE A.USER_NO = B.USER_NO
+		AND A.USER_NO = #{userNo}
+	</select>
+	
+</mapper>
